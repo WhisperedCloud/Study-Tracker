@@ -1,0 +1,63 @@
+:root {
+    --bs-primary: #007bff;
+    --bs-light-bg-subtle: #f8f9fa;
+    --bs-dark-bg-subtle: #343a40;
+}
+
+[data-bs-theme="dark"] {
+    --bs-body-bg: #212529;
+    --bs-body-color: #dee2e6;
+    --bs-border-color: #495057;
+    --bs-card-bg: #2b3035;
+    --bs-primary: #0d8eff;
+}
+
+body {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.sidebar {
+    background-color: var(--bs-body-bg);
+}
+
+.nav-pills .nav-link {
+    color: var(--bs-body-color);
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    background-color: var(--bs-primary);
+    color: #fff;
+}
+
+.mode-switch i {
+    transition: transform 0.3s ease;
+}
+
+[data-bs-theme="dark"] .mode-switch i {
+    transform: rotate(180deg);
+}
+
+.task-column {
+    background-color: var(--bs-secondary-bg);
+    min-height: 70vh;
+}
+
+.task {
+    cursor: grab;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-left: 5px solid;
+}
+
+.task:active {
+    cursor: grabbing;
+}
+
+.task.is-dragging {
+    opacity: 0.5;
+    transform: scale(1.05);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+}
+
+.task.high { border-left-color: var(--bs-danger); }
+.task.medium { border-left-color: var(--bs-warning); }
+.task.low { border-left-color: var(--bs-success); }
