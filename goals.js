@@ -10,21 +10,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderGoals = () => {
         goalsList.innerHTML = '';
         if (goals.length === 0) {
-            goalsList.innerHTML =`<div class="text-center text-muted">No goals set yet. Add one to get started!</div>`;
+            goalsList.innerHTML = `<div class="text-center text-muted p-4">No goals set yet. Add one to get started!</div>`;
             return;
         }
 
         goals.forEach(goal => {
             const goalElement = document.createElement('div');
-            goalElement.className = 'card shadow-sm';
+            goalElement.className = 'card shadow-sm goal-card';
             goalElement.dataset.id = goal.id;
-
             const unlinkedTasks = tasks.filter(task => !task.goalId);
             let taskOptions = unlinkedTasks.map(task => `<option value="${task.id}">${task.title}</option>`).join('');
-
             const linkedTasks = tasks.filter(task => task.goalId === goal.id);
-            let linkedTasksHtml = linkedTasks.length > 0 ? '<ul class="list-group list-group-flush">' + linkedTasks.map(t => `<li class="list-group-item small">${t.title} <span class="badge bg-secondary float-end">${t.status}</span></li>`).join('') + '</ul>' : '<p class="text-muted small">No tasks linked yet.</p>';
-
+            let linkedTasksHtml = linkedTasks.length > 0 ? '<ul class="list-group list-group-flush">' + linkedTasks.map(t => `<li class="list-group-item small">${t.title} <span class="badge bg-secondary float-end">${t.status}</span></li>`).join('') + '</ul>' : '<p class="text-muted small p-2">No tasks linked yet.</p>';
             const doneTasksCount = linkedTasks.filter(t => t.status === 'done').length;
             const progress = linkedTasks.length > 0 ? (doneTasksCount / linkedTasks.length) * 100 : 0;
 
@@ -35,13 +32,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         <button class="btn-close delete-goal-btn"></button>
                     </div>
                     <p class="card-text small text-muted">${goal.description}</p>
-                    
-                    <div class="progress mb-2" role="progressbar">
+                    <div class="progress mb-2" role="progressbar" aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100">
                         <div class="progress-bar bg-success" style="width: ${progress}%;"></div>
                     </div>
-                    <p class="small mb-2"><strong>Linked Tasks:</strong></p>
+                    <p class="small mb-2"><strong>Linked Tasks:</strong> (${doneTasksCount}/${linkedTasks.length})</p>
                     ${linkedTasksHtml}
-
                     <div class="input-group mt-3">
                          <select class="form-select task-to-link" ${unlinkedTasks.length === 0 ? 'disabled' : ''}>
                             <option value="">${unlinkedTasks.length === 0 ? 'No tasks to link' : '-- Select a task --'}</option>
@@ -49,14 +44,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         </select>
                         <button class="btn btn-outline-primary link-task-btn">Link Task</button>
                     </div>
-                </div>
-            `;
+                </div>`;
+            
             goalsList.appendChild(goalElement);
         });
 
         document.querySelectorAll('.link-task-btn').forEach(btn => {
             btn.addEventListener('click', e => {
-                const goalId = parseInt(e.target.closest('.card').dataset.id);
+                const goalId = parseInt(e.target.closest('.goal-card').dataset.id);
                 const selectElement = e.target.previousElementSibling;
                 const taskId = parseInt(selectElement.value);
                 if (!taskId) return;
@@ -72,14 +67,15 @@ document.addEventListener('DOMContentLoaded', () => {
         
         document.querySelectorAll('.delete-goal-btn').forEach(btn => {
             btn.addEventListener('click', e => {
-                if (!confirm("Are you sure you want to delete this goal?")) return;
-                const goalId = parseInt(e.target.closest('.card').dataset.id);
-                goals = goals.filter(g => g.id !== goalId);
-                tasks.forEach(t => { if (t.goalId === goalId) delete t.goalId; });
-                
-                saveGoals();
-                saveTasks();
-                renderGoals();
+                if (confirm("Are you sure you want to delete this goal? This will also unlink its tasks.")) {
+                    const goalId = parseInt(e.target.closest('.goal-card').dataset.id);
+                    goals = goals.filter(g => g.id !== goalId);
+                    tasks.forEach(t => { if (t.goalId === goalId) delete t.goalId; });
+                    
+                    saveGoals();
+                    saveTasks();
+                    renderGoals();
+                }
             });
         });
     };
