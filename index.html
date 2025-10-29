@@ -30,6 +30,7 @@
                     </ul>
                 </div>
             </nav>
+
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2">Dashboard</h1>
@@ -58,13 +59,17 @@
                             <div class="card-header fw-bold">Quick Add Task</div>
                             <div class="card-body">
                                 <form id="quick-add-form" class="row g-3 align-items-end">
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-5">
                                         <label for="quick-task-title" class="form-label">Task Title</label>
                                         <input type="text" class="form-control" id="quick-task-title" placeholder="e.g., Read Chapter 3" required>
                                     </div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3">
                                         <label for="quick-task-due-date" class="form-label">Due Date</label>
                                         <input type="date" class="form-control" id="quick-task-due-date">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label for="quick-task-due-time" class="form-label">Time</label>
+                                        <input type="time" class="form-control" id="quick-task-due-time">
                                     </div>
                                     <div class="col-sm-2">
                                         <button type="submit" class="btn btn-primary w-100">Add</button>
@@ -77,6 +82,7 @@
             </main>
         </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="main.js"></script>

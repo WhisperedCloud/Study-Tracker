@@ -7,6 +7,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let draggedTaskId = null;
 
     const saveTasks = () => localStorage.setItem('tasks', JSON.stringify(tasks));
+    const formatTime = (timeString) => {
+        if (!timeString) return '';
+        const [hour, minute] = timeString.split(':');
+        const hourNum = parseInt(hour, 10);
+        const ampm = hourNum >= 12 ? 'PM' : 'AM';
+        const formattedHour = hourNum % 12 || 12; 
+        return `at ${formattedHour}:${minute} ${ampm}`;
+    };
 
     const renderTasks = () => {
         document.querySelectorAll('.task-list').forEach(list => list.innerHTML = '');
@@ -15,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const priorityFilter = filterPriority.value;
 
         const filteredTasks = tasks.filter(task => {
-            const matchesSearch = task.title.toLowerCase().includes(searchTerm) || task.description.toLowerCase().includes(searchTerm);
+            const matchesSearch = task.title.toLowerCase().includes(searchTerm) || (task.description && task.description.toLowerCase().includes(searchTerm));
             const matchesPriority = priorityFilter === 'all' || task.priority === priorityFilter;
             return matchesSearch && matchesPriority;
         });
@@ -28,8 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
             taskElement.innerHTML = `
                 <h6 class="card-title mb-1">${task.title}</h6>
                 <p class="card-text small text-muted">${task.description || '&nbsp;'}</p>
-                <div class="small text-muted">Due: ${task.dueDate}</div>
+                <div class="small text-muted">Due: ${task.dueDate} ${formatTime(task.dueTime)}</div>
             `;
+
             taskElement.addEventListener('dragstart', () => {
                 draggedTaskId = task.id;
                 taskElement.classList.add('is-dragging');
@@ -51,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
             title: document.getElementById('task-title').value,
             description: document.getElementById('task-description').value,
             dueDate: document.getElementById('task-due-date').value,
+            dueTime: document.getElementById('task-due-time').value, 
             category: document.getElementById('task-category').value,
             priority: document.getElementById('task-priority').value,
             status: 'todo'
@@ -65,15 +75,17 @@ document.addEventListener('DOMContentLoaded', () => {
     
     searchBar.addEventListener('input', renderTasks);
     filterPriority.addEventListener('change', renderTasks);
+
     taskColumns.forEach(column => {
         const list = column.querySelector('.task-list');
+
         column.addEventListener('dragenter', (e) => {
             e.preventDefault();
             column.classList.add('drag-over');
         });
 
         column.addEventListener('dragover', (e) => {
-            e.preventDefault(); 
+            e.preventDefault();
         });
 
         column.addEventListener('dragleave', () => {
@@ -82,9 +94,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         column.addEventListener('drop', (e) => {
             e.preventDefault();
-            column.classList.remove('drag-over'); 
+            column.classList.remove('drag-over');
             
             if (!draggedTaskId) return;
+
             const task = tasks.find(t => t.id === draggedTaskId);
             if (task) {
                 const newStatus = list.dataset.status;

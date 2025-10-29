@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const savedTheme = localStorage.getItem('theme') || 'light';
     setTheme(savedTheme);
-
+    
     const exportBtn = document.getElementById('export-data');
     const importFile = document.getElementById('import-file');
     const clearDataBtn = document.getElementById('clear-data');
@@ -77,11 +77,13 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const title = document.getElementById('quick-task-title').value;
             const dueDate = document.getElementById('quick-task-due-date').value;
+            const dueTime = document.getElementById('quick-task-due-time').value; 
             
             const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
             const newTask = {
                 id: Date.now(), title, description: '', 
                 dueDate: dueDate || new Date().toISOString().slice(0, 10),
+                dueTime: dueTime, // Save time
                 category: 'study', priority: 'medium', status: 'todo'
             };
             tasks.push(newTask);
